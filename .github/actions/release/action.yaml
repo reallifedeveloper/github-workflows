@@ -17,29 +17,36 @@ runs:
       run: |
         git config user.email "rld@reallifedeveloper.com"
         git config user.name "RealLifeDeveloper"
+      shell: bash
     - name: Use version number from input
       if: ${{ inputs.release_version != '' }}
       run: |
         mvn versions:set -DnewVersion=${{ inputs.release_version }} -DgenerateBackupPoms=false
         RELEASE_VERSION=${{ inputs.release_version }}
+      shell: bash
     - name: Use version number from POM
       if: ${{ inputs.release_version == '' }}
       run: |
         mvn versions:set -DremoveSnapshot -DgenerateBackupPoms=false
         RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+      shell: bash
     - name: Create release branch
       run: |
         git checkout -b release/$RELEASE_VERSION
         git commit -a -m "New release candidate $RELEASE_VERSION"
         git push -u origin release/$RELEASE_VERSION
+      shell: bash
     - name: Create release tag
       run: |
         git tag v$RELEASE_VERSION
         git push origin v$RELEASE_VERSION
+      shell: bash
     - name: Bump version number in POM to next snapshot version
       if: ${{ inputs.release_version == '' }}
+      run: |
         git checkout master
         mvn versions:set -DnextSnapshot -DgenerateBackupPoms=false
         git add pom.xml
         git commit -m "Bumped POM to next snapshot version"
         git push
+      shell: bash
