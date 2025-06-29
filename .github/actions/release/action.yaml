@@ -7,7 +7,7 @@ inputs:
 outputs:
   release-version:
     description: 'The version number that was actually used for the release'
-    value: ${{ steps.set-output-value.outputs.release-version }}
+    value: ${{ steps.set-output-values.outputs.release-version }}
 
 runs:
   using: composite
@@ -21,6 +21,7 @@ runs:
       run: |
         git config user.email "rld@reallifedeveloper.com"
         git config user.name "RealLifeDeveloper"
+        echo "secrets.GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
       shell: bash
     - name: Use version number from input
       if: ${{ inputs.release-version != '' }}
