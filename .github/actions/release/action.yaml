@@ -1,9 +1,6 @@
 name: Composite actions for release
 
 inputs:
-  GITHUB_TOKEN:
-    description: 'The Github token from the calling workflow'
-    required: true
   release-version:
     description: 'The version number to use for the new release, default converts snapshot version in POM to release version'
     required: false
@@ -16,8 +13,6 @@ runs:
   using: composite
   steps:
     - uses: actions/checkout@v4
-      with:
-        token: ${{ inputs.GITHUB_TOKEN }}
     - uses: actions/setup-java@v4
       with:
         java-version: '17'
