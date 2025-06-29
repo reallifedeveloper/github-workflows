@@ -4,6 +4,10 @@ inputs:
   release-version:
     description: 'The version number to use for the new release, default converts snapshot version in POM to release version'
     required: false
+  main-branch:
+    description: 'The name of the Git branch containing the code to be released'
+    required: false
+    default: 'main'
 outputs:
   release-version:
     description: 'The version number that was actually used for the release'
@@ -54,7 +58,7 @@ runs:
     - name: Bump version number in POM to next snapshot version
       if: ${{ inputs.release-version == '' }}
       run: |
-        git checkout master
+        git checkout ${{ inputs.main-branch }}
         mvn versions:set -DnextSnapshot -DgenerateBackupPoms=false
         git add pom.xml
         git commit -m "Bumped POM to next snapshot version"

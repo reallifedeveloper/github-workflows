@@ -2,9 +2,16 @@ name: Create release branch and tag
 
 on:
   workflow_call:
+    inputs:
+      main-branch:
+        description: 'The name of the Git branch containing the code to release'
+        required: false
+        default: 'main'
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: reallifedeveloper/github-workflows/.github/actions/release@main
+        with:
+          main-branch: ${{ inputs.main-branch }}
