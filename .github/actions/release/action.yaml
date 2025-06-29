@@ -1,9 +1,13 @@
 name: Composite actions for release
 
 inputs:
-  release_version:
+  release-version:
     description: 'The version number to use for the new release, default converts snapshot version in POM to release version'
     required: false
+outputs:
+  release-version:
+    description: 'The version number that was actually used for the release'
+    value: ${{ steps.set-output-value.outputs.release-version }}
 
 runs:
   using: composite
@@ -19,30 +23,36 @@ runs:
         git config user.name "RealLifeDeveloper"
       shell: bash
     - name: Use version number from input
-      if: ${{ inputs.release_version != '' }}
+      if: ${{ inputs.release-version != '' }}
       run: |
-        mvn versions:set -DnewVersion=${{ inputs.release_version }} -DgenerateBackupPoms=false
-        RELEASE_VERSION=${{ inputs.release_version }}
+        mvn versions:set -DnewVersion=${{ inputs.release-version }} -DgenerateBackupPoms=false
+        RELEASE_VERSION=${{ inputs.release-version }}
+        echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
       shell: bash
     - name: Use version number from POM
-      if: ${{ inputs.release_version == '' }}
+      if: ${{ inputs.release-version == '' }}
       run: |
         mvn versions:set -DremoveSnapshot -DgenerateBackupPoms=false
         RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
       shell: bash
     - name: Create release branch
       run: |
         git checkout -b release/$RELEASE_VERSION
         git commit -a -m "New release candidate $RELEASE_VERSION"
         git push -u origin release/$RELEASE_VERSION
+      env:
+        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       shell: bash
     - name: Create release tag
       run: |
         git tag v$RELEASE_VERSION
         git push origin v$RELEASE_VERSION
+      env:
+        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
       shell: bash
     - name: Bump version number in POM to next snapshot version
-      if: ${{ inputs.release_version == '' }}
+      if: ${{ inputs.release-version == '' }}
       run: |
         git checkout master
         mvn versions:set -DnextSnapshot -DgenerateBackupPoms=false
@@ -50,3 +60,11 @@ runs:
         git commit -m "Bumped POM to next snapshot version"
         git push
       shell: bash
+    - name: Set output values
+      id: set-output-values
+      run: |
+        echo "release-version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
+      env:
+        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+      shell: bash
+
