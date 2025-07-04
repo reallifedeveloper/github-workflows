@@ -15,6 +15,13 @@ outputs:
   release-version:
     description: 'The version number that was actually used for the release'
     value: ${{ steps.set-output-values.outputs.release-version }}
+secrets:
+  GPG_SECRET_KEY:
+    description: 'The GPG key to use to sign the jar files, should use \n for newlines'
+    required: true
+  GPG_SECRET_KEY_PASSPHRASE:
+    description: 'The passphrase for the GPG key'
+    required: true
 
 runs:
   using: composite
@@ -24,10 +31,25 @@ runs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    - name: Import GPG secret key
+      run: |
+        cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
+        GPG_SECRET_KEY_ID=$(gpg --list-secret-keys --keyid-format=long --with-colons | grep sec | cut --delimiter ':' --fields 5)
+        echo "GPG_SECRET_KEY_ID=$GPG_SECRET_KEY_ID" >> $GITHUB_ENV
+      shell: bash
+    - name: Add custom GPG signing program that uses passphrase from environment variable
+      run: |
+        rm -rf /tmp/gpg.sh
+        echo '#!/bin/bash' >> /tmp/gpg.sh
+        echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_SECRET_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+        chmod +x /tmp/gpg.sh
+      shell: bash
     - name: git config
       run: |
         git config user.email "rld@reallifedeveloper.com"
         git config user.name "RealLifeDeveloper"
+        git config user.signingkey ${{ env.GPG_SECRET_KEY_ID }}
+        git config gpg.program /tmp/gpg.sh
       shell: bash
     - name: Use version number from input
       if: ${{ inputs.release-version != '' }}
@@ -45,18 +67,16 @@ runs:
       shell: bash
     - name: Create release branch
       run: |
-        git checkout -b release/$RELEASE_VERSION
-        git commit -a -m "New release candidate $RELEASE_VERSION"
-        git push -u origin release/$RELEASE_VERSION
-      env:
-        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+        git checkout -b release/${{ env.RELEASE_VERSION }}
+        git commit -a -m "New release candidate ${{ env.RELEASE_VERSION }}"
+        git push -u origin release/${{ env.RELEASE_VERSION }}
       shell: bash
     - name: Create release tag
       run: |
-        git tag v$RELEASE_VERSION
-        git push origin v$RELEASE_VERSION
+        git tag -s v${{ env.RELEASE_VERSION }} -m "Tagging release candidate ${{ env.RELEASE_VERSION }}"
+        git push origin v${{ env.RELEASE_VERSION }}
       env:
-        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+        GPG_SECRET_KEY_PASSPHRASE: ${{ env.GPG_SECRET_KEY_PASSPHRASE }}
       shell: bash
     - name: Bump version number in POM to next snapshot version
       if: ${{ inputs.release-version == '' }}
@@ -70,8 +90,6 @@ runs:
     - name: Set output values
       id: set-output-values
       run: |
-        echo "release-version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
-      env:
-        RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+        echo "release-version=${{ env.RELEASE_VERSION }}" >> $GITHUB_OUTPUT
       shell: bash
 

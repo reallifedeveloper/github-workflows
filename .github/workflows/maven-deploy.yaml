@@ -24,12 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install gpg secret key
+      - name: Import GPG secret key
         run: |
-          # Install GPG secret key
           cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
-          # Verify gpg secret key
-          gpg --list-secret-keys --keyid-format LONG
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
