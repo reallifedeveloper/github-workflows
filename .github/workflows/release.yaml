@@ -6,10 +6,20 @@ permissions:
 on:
   workflow_call:
     inputs:
+      release-version:
+        description: 'The version number to use for the new release, default converts snapshot version in POM to release version'
+        required: false
       main-branch:
         description: 'The name of the Git branch containing the code to release'
         required: false
         default: 'main'
+    secrets:
+      GPG_SECRET_KEY:
+        description: 'The GPG key to use to sign the jar files, should use \n for newlines'
+        required: true
+      GPG_SECRET_KEY_PASSPHRASE:
+        description: 'The passphrase for the GPG key'
+        required: true
 
 jobs:
   release:
@@ -17,4 +27,5 @@ jobs:
     steps:
       - uses: ../actions/release
         with:
+          release-version: ${{ inputs.release-version }}
           main-branch: ${{ inputs.main-branch }}
