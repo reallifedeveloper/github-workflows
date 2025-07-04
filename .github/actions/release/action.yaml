@@ -15,13 +15,6 @@ outputs:
   release-version:
     description: 'The version number that was actually used for the release'
     value: ${{ steps.set-output-values.outputs.release-version }}
-secrets:
-  GPG_SECRET_KEY:
-    description: 'The GPG key to use to sign the jar files, should use \n for newlines'
-    required: true
-  GPG_SECRET_KEY_PASSPHRASE:
-    description: 'The passphrase for the GPG key'
-    required: true
 
 runs:
   using: composite
