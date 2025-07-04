@@ -1,5 +1,8 @@
 name: Composite actions for release
 
+permissions:
+  contents: write
+
 inputs:
   release-version:
     description: 'The version number to use for the new release, default converts snapshot version in POM to release version'
