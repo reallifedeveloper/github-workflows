@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: reallifedeveloper/github-workflows/.github/actions/release@main
+      - uses: ./.github/actions/release
         with:
           release-version: ${{ inputs.release-version }}
           main-branch: ${{ inputs.main-branch }}
