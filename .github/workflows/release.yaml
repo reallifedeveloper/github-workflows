@@ -34,7 +34,6 @@ jobs:
           echo "github.head_ref=${{ github.head_ref }}"
           echo "github.workflow_ref=${{ github.workflow_ref }}"
           echo "github.workflow_sha=${{ github.workflow_sha }}"
-          # echo "github context: ${{ toJson(github) }}"
           echo "job context: ${{ toJson(job) }}"
           pwd
           ls -laF
