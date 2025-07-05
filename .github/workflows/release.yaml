@@ -33,6 +33,7 @@ jobs:
           echo "github.ref=${{ github.ref }}"
           echo "github.head_ref=${{ github.head_ref }}"
           echo "github.workflow_ref=${{ github.workflow_ref }}"
+          echo "github.workflow_sha=${{ github.workflow_sha }}"
           pwd
           ls -laF
           ls -laF ..
