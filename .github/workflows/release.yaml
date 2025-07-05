@@ -27,19 +27,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: foo
-        run: |
-          echo "github.ref=${{ github.ref }}"
-          echo "github.head_ref=${{ github.head_ref }}"
-          echo "github.workflow_ref=${{ github.workflow_ref }}"
-          echo "github.workflow_sha=${{ github.workflow_sha }}"
-          echo "job context: ${{ toJson(job) }}"
-          pwd
-          ls -laF
-          ls -laF ..
-          ls -laF ../..
-      - uses: ./../github-workflows/.github/actions/release
+      - uses: reallifedeveloper/github-workflows/.github/actions/release@main
         with:
           release-version: ${{ inputs.release-version }}
           main-branch: ${{ inputs.main-branch }}
