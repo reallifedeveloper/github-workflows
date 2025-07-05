@@ -17,10 +17,10 @@ on:
         default: 'main'
     secrets:
       GPG_SECRET_KEY:
-        description: 'The GPG key to use to sign the Git release tag, should use \n for newlines'
-        required: true
+        description: 'If provided, the GPG key to use to sign the Git release tag, should use \n for newlines'
+        required: false
       GPG_SECRET_KEY_PASSPHRASE:
-        description: 'The passphrase for the GPG key'
+        description: 'If the GPG secret key is provided, this should be the passphrase for the GPG key'
         required: true
 
 jobs:
@@ -32,3 +32,5 @@ jobs:
         with:
           release-version: ${{ inputs.release-version }}
           main-branch: ${{ inputs.main-branch }}
+          gpg-secret-key: ${{ secrets.GPG_SECRET_KEY }}
+          gpg-secret-key-passphrase: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
