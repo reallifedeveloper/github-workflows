@@ -33,9 +33,9 @@ jobs:
           echo "github.ref=${{ github.ref }}"
           echo "github.head_ref=${{ github.head_ref }}"
           pwd
-          ls -l
-          ls -l ..
-          ls -l ../..
+          ls -laF
+          ls -laF ..
+          ls -laF ../..
       - uses: ./../github-workflows/.github/actions/release
         with:
           release-version: ${{ inputs.release-version }}
