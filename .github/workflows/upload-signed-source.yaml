@@ -11,13 +11,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: foo
+      - name: Import GPG secret key
+        run: |
+          cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
+      - name: Create source archive files and sign them
         run: |
           repo_name="${{ github.event.repository.name }}"
-          tag="${{ github.ref_name }}"
-          echo "repo_name=$repo_name"
-          echo "tag=$tag"
-          echo "RELEASE_NAME=${repo_name}-${tag/#v/}" >> $GITHUB_ENV
-      - name: bar
-        run: |
-          echo "Creating release ${{ env.RELEASE_NAME }}"
+          RELEASE_TAG="${{ github.ref_name }}"
+          RELEASE_NAME="${repo_name}-${tag/#v/}"
+          echo "Creating archive /tmp/${RELEASE_NAME}.tar.gz and signing it"
+          git -c tar.tar.gz.command='gzip -cn' archive --format=tar.gz --prefix=${RELEASE_NAME}/ -o /tmp/${RELEASE_NAME}.tar.gz ${RELEASE_TAG}
+          echo ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }} | gpg --passphrase-fd 0 --armor --detach-sign ${RELEASE_NAME}.tar.gz
+          echo "Creating archive /tmp/${RELEASE_NAME}.zip and signing it"
+          git archive --format=zip --prefix=${RELEASE_NAME}/ -o /tmp/${{ RELEASE_NAME }}.zip ${RELEASE_TAG}
+          echo ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }} | gpg --passphrase-fd 0 --armor --detach-sign ${RELEASE_NAME}.zip
+          # Save RELEASE_NAME for next step
+          echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
+      - name: Upload archive and signature files
+        uses: softprops/action-gh-release@v2.3.2
+        if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
+        with:
+          files: |
+            /tmp/${{ env.RELEASE_NAME }}.tar.gz
+            /tmp/${{ env.RELEASE_NAME }}.tar.gz.asc
+            /tmp/${{ env.RELEASE_NAME }}.zip
+            /tmp/${{ env.RELEASE_NAME }}.zip.asc
