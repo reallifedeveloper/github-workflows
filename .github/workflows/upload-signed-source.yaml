@@ -17,7 +17,7 @@ jobs:
           tag="${{ github.ref_name }}"
           echo "repo_name=$repo_name"
           echo "tag=$tag"
+          echo "RELEASE_NAME=${repo_name}-${tag/#v/}" >> $GITHUB_ENV
       - name: bar
-        if: startsWith($tag, 'v')
         run: |
-          echo "Creating release $repo_name-$tag"
+          echo "Creating release ${{ env.RELEASE_NAME }}"
