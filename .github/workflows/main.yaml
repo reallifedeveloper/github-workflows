@@ -41,7 +41,8 @@ jobs:
         git config user.name "RealLifeDeveloper"
     - name: Create release tag
       run: |
-        git tag v${{ env.RELEASE_VERSION }} -m "Tagging release candidate ${{ env.RELEASE_VERSION }}"
-        git push origin v${{ env.RELEASE_VERSION }}
+        RELEASE_VERSION=${{ steps.generate_release_tag.outputs.release_tag }}
+        git tag v$RELEASE_VERSION -m "Tagging release candidate $RELEASE_VERSION"
+        git push origin v$RELEASE_VERSION
       env:
         GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
