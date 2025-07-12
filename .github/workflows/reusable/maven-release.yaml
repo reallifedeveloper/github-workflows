@@ -1,3 +1,6 @@
+#
+# A reusable workflow to create a release branch for a Maven project, update the version numbers and tag the release.
+#
 name: Create release branch and tag
 
 permissions:
@@ -21,13 +24,13 @@ on:
         required: false
       GPG_SECRET_KEY_PASSPHRASE:
         description: 'If the GPG secret key is provided, this should be the passphrase for the GPG key'
-        required: true
+        required: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: reallifedeveloper/github-workflows/.github/actions/release@main
+      - uses: reallifedeveloper/github-workflows/.github/actions/maven-release@main
         with:
           release-version: ${{ inputs.release-version }}
           main-branch: ${{ inputs.main-branch }}

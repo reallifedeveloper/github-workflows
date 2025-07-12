@@ -1,0 +1,47 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - name: Generate release tag
+      id: generate_release_tag
+      uses: alexvingg/next-release-tag@v1.0.4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        tag_prefix: ''
+    - name: Prepare to create GPG signature
+      run: |
+        # Import GPG secret key
+        cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
+        GPG_SECRET_KEY_ID=$(gpg --list-secret-keys --keyid-format=long --with-colons | grep sec | cut --delimiter ':' --fields 5)
+        # Add custom GPG signing program that uses passphrase from environment variable
+        rm -rf /tmp/gpg.sh
+        echo '#!/bin/bash' >> /tmp/gpg.sh
+        echo 'gpg --batch --pinentry-mode=loopback --passphrase $GPG_SECRET_KEY_PASSPHRASE $@' >> /tmp/gpg.sh
+        chmod +x /tmp/gpg.sh
+        # Configure Git to use the custom GPG signing program and always sign tags with the given key
+        git config gpg.program /tmp/gpg.sh
+        git config tag.gpgSign true
+        git config user.signingkey $GPG_SECRET_KEY_ID
+    - name: git config
+      run: |
+        git config user.email "rld@reallifedeveloper.com"
+        git config user.name "RealLifeDeveloper"
+    - name: Create release tag
+      run: |
+        git tag v${{ env.RELEASE_VERSION }} -m "Tagging release candidate ${{ env.RELEASE_VERSION }}"
+        git push origin v${{ env.RELEASE_VERSION }}
+      env:
+        GPG_SECRET_KEY_PASSPHRASE: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
