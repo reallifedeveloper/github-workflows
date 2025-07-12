@@ -11,6 +11,14 @@ inputs:
     description: 'The name of the Git branch containing the code to be released'
     required: false
     default: 'main'
+  java-version:
+    description: 'The Java version to use'
+    required: false
+    default: '21'
+  java-distribution:
+    description: 'The Java distribution to use'
+    required: false
+    default: 'zulu'
   gpg-secret-key:
     description: 'If provided, the GPG key to use to sign the Git release tag, should use \n for newlines'
     required: false
@@ -28,8 +36,8 @@ runs:
     - uses: actions/checkout@v4
     - uses: actions/setup-java@v4
       with:
-        java-version: ${{ vars.JAVA_VERSION || '21' }}
-        distribution: ${{ vars.JAVA_DISTRIBUTION || 'zulu' }}
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
     - name: Prepare to create GPG signature
       if: ${{ inputs.gpg-secret-key != '' }}
       run: |
