@@ -23,7 +23,7 @@ jobs:
           git -c tar.tar.gz.command='gzip -cn' archive --format=tar.gz --prefix=${RELEASE_NAME}/ -o /tmp/${RELEASE_NAME}.tar.gz ${RELEASE_TAG}
           echo ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }} | gpg --passphrase-fd 0 --armor --detach-sign ${RELEASE_NAME}.tar.gz
           echo "Creating archive /tmp/${RELEASE_NAME}.zip and signing it"
-          git archive --format=zip --prefix=${RELEASE_NAME}/ -o /tmp/${{ RELEASE_NAME }}.zip ${RELEASE_TAG}
+          git archive --format=zip --prefix=${RELEASE_NAME}/ -o /tmp/${RELEASE_NAME}.zip ${RELEASE_TAG}
           echo ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }} | gpg --passphrase-fd 0 --armor --detach-sign ${RELEASE_NAME}.zip
           # Save RELEASE_NAME for next step
           echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
