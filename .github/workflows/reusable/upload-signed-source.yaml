@@ -1,14 +1,13 @@
-name: Update GitHub release
+name: Upload signed source tar ball and zip file to a GitHub release
 
 permissions:
   contents: read
 
 on:
   workflow_call:
-  workflow_dispatch:
 
 jobs:
-  update-github-release:
+  upload-signed-source:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,3 +17,7 @@ jobs:
           tag="${{ github.ref_name }}"
           echo "repo_name=$repo_name"
           echo "tag=$tag"
+      - name: bar
+        if: startsWith($tag, 'v')
+        run: |
+          echo "Creating release $repo_name-$tag"
