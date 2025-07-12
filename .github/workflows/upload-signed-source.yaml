@@ -18,7 +18,7 @@ jobs:
         run: |
           repo_name="${{ github.event.repository.name }}"
           RELEASE_TAG="${{ github.ref_name }}"
-          RELEASE_NAME="${repo_name}-${tag/#v/}"
+          RELEASE_NAME="${repo_name}-${RELEASE_TAG/#v/}"
           echo "Creating archive /tmp/${RELEASE_NAME}.tar.gz and signing it"
           git -c tar.tar.gz.command='gzip -cn' archive --format=tar.gz --prefix=${RELEASE_NAME}/ -o /tmp/${RELEASE_NAME}.tar.gz ${RELEASE_TAG}
           echo ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }} | gpg --passphrase-fd 0 --armor --detach-sign ${RELEASE_NAME}.tar.gz
