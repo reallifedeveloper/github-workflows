@@ -10,5 +10,5 @@ permissions:
 
 jobs:
   upload:
-    uses: reallifedeveloper/github-workflows/.github/workflows/reusable/upload-signed-source@main
+    uses: reallifedeveloper/github-workflows/.github/workflows/upload-signed-source@main
     secrets: inherit
