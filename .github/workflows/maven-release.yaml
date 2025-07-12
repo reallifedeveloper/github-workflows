@@ -17,14 +17,6 @@ on:
         type: string
         description: 'The name of the Git branch containing the code to release, default is main'
         required: false
-      java-version:
-        type: string
-        description: 'The Java version to use, default is 21'
-        required: false
-      java-distribution:
-        type: string
-        description: 'The Java distribution to use, default is zulu'
-        required: false
     secrets:
       GPG_SECRET_KEY:
         description: 'If provided, the GPG key to use to sign the Git release tag, should use \n for newlines'
@@ -41,7 +33,7 @@ jobs:
         with:
           release-version: ${{ inputs.release-version }}
           main-branch: ${{ inputs.main-branch }}
-          java-versoin: ${{ inputs.java-version }}
-          java-distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ vars.JAVA_VERSION || '21' }}
+          java-distribution: ${{ vars.JAVA_DISTRIBUTION || 'zulu' }}
           gpg-secret-key: ${{ secrets.GPG_SECRET_KEY }}
           gpg-secret-key-passphrase: ${{ secrets.GPG_SECRET_KEY_PASSPHRASE }}
