@@ -11,7 +11,7 @@ on:
     inputs:
       extra-maven-args:
         type: string
-        descriptionn: 'Extra arguments added to the call to mvn clean install, e.g. "-DcheckAll -Duser.timezone=UTC"'
+        description: 'Extra arguments added to the call to mvn clean install, e.g. "-DcheckAll -Duser.timezone=UTC"'
         required: false
         default: '-DcheckAll'
 
