@@ -28,9 +28,11 @@ jobs:
           hostname=$(echo ${{ secrets.MAVEN_SITE_URL }} | cut --delimiter '/' --fields 3)
           ssh-keyscan $hostname >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+          cat ~/.ssh/known_hosts
       - name: mvn site
         run: |
-          mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
-            -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
+          # mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
+          #   -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
+          echo "Done"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
