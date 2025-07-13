@@ -25,4 +25,4 @@ jobs:
         run: mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
           -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
         env:
-          GITHUB_TOKEN: ${{ secretes.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
