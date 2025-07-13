@@ -22,7 +22,8 @@ jobs:
           server-username: ${{ secrets.MAVEN_SITE_USERNAME }}
           server-password: ${{ secrets.MAVEN_SITE_PASSWORD }}
       - name: mvn site
-        run: mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
-          -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
+        run: |
+          mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
+            -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
