@@ -20,7 +20,12 @@ jobs:
       uses: alexvingg/next-release-tag@v1.0.4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        tag_prefix: ''
+        tag_prefix: 'v'
+    - name: Remove leading 'v' from version
+      id: generate_release_version
+      run: |
+        release_tag=${{ steps.generate_release_tag.outputs.release_tag }}
+        echo "release_version=${release_tag#v}" >> $GITHUB_OUTPUT
     - name: Prepare to create GPG signature
       run: |
         # Import GPG secret key
@@ -41,7 +46,7 @@ jobs:
         git config user.name "RealLifeDeveloper"
     - name: Create release tag
       run: |
-        RELEASE_VERSION=${{ steps.generate_release_tag.outputs.release_tag }}
+        RELEASE_VERSION=${{ steps.generate_release_version.outputs.release_version }}
         git tag v$RELEASE_VERSION -m "Tagging release candidate $RELEASE_VERSION"
         git push origin v$RELEASE_VERSION
       env:
