@@ -8,6 +8,12 @@ permissions:
 
 on:
   workflow_call:
+    inputs:
+      extra-maven-args:
+        type: string
+        descriptionn: 'Extra arguments added to the call to mvn clean install, e.g. "-DcheckAll -Duser.timezone=UTC"'
+        required: false
+        default: '-DcheckAll'
 
 jobs:
   install:
@@ -19,4 +25,4 @@ jobs:
           java-version: ${{ vars.JAVA_VERSION || '21' }}
           distribution: ${{ vars.JAVA_DISTRIBUTION || 'zulu' }}
       - name: mvn install
-        run: mvn -B -DcheckAll clean install
+        run: mvn -B ${{ inputs.extra-maven-args }} clean install
