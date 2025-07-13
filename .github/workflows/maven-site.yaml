@@ -26,6 +26,7 @@ jobs:
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           hostname=$(echo ${{ secrets.MAVEN_SITE_URL }} | cut --delimiter '/' --fields 3)
+          ssh $hostname
           ssh-keyscan $hostname >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
           ssh $hostname
