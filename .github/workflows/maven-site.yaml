@@ -1,0 +1,28 @@
+#
+# A reusable workflow to build and deploy a Maven documentation site for a project.
+#
+name: Maven site
+
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ vars.JAVA_VERSION || '21' }}
+          distribution: ${{ vars.JAVA_DISTRIBUTION || 'zulu' }}
+          server-id: reallifedeveloper-site
+          server-username: ${{ secrets.MAVEN_SITE_USERNAME }}
+          server-password: ${{ secrets.MAVEN_SITE_PASSWORD }}
+      - name: mvn site
+        run: mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
+          -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
+        env:
+          GITHUB_TOKEN: ${{ secretes.GITHUB_TOKEN }}
