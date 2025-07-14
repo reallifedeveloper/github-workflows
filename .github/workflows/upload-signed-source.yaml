@@ -1,3 +1,6 @@
+#
+# A reusable workflow to create and upload signed archive files to a GitHub release.
+#
 name: Upload signed source tar ball and zip file to a GitHub release
 
 permissions:
