@@ -19,8 +19,8 @@ jobs:
           java-version: ${{ vars.JAVA_VERSION || '21' }}
           distribution: ${{ vars.JAVA_DISTRIBUTION || 'zulu' }}
           server-id: reallifedeveloper-site
-          server-username: ${{ secrets.MAVEN_SITE_USERNAME }}
-          server-password: ${{ secrets.MAVEN_SITE_PASSWORD }}
+          server-username: MAVEN_SITE_USERNAME
+          server-password: MAVEN_SITE_PASSWORD
       - name: Add host to ~/.ssh/known_hosts
         run: |
           mkdir -p ~/.ssh
@@ -28,21 +28,13 @@ jobs:
           hostname=$(echo ${{ secrets.MAVEN_SITE_URL }} | cut --delimiter '/' --fields 3)
           ssh-keyscan -t rsa $hostname > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
-          echo "~/.ssh/known_hosts:"
-          cat ~/.ssh/known_hosts
-          echo "~/.m2/settings.xml:"
-          cat ~/.m2/settings.xml
-          echo "=========="
-          echo ${{ secrets.MAVEN_SITE_URL}} | sed 's/./& /g' | sed 's/ //g'
-          echo ${{ secrets.MAVEN_SITE_USERNAME}} | sed 's/./& /g' | sed 's/ //g'
-          echo ${{ secrets.MAVEN_SITE_PASSWORD}} | sed 's/./& /g' | sed 's/ //g'
-          echo ${{ secrets.NVD_API_KEY}} | sed 's/./& /g' | sed 's/ //g'
-
       - name: mvn site
         run: |
           # mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
           #   -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
           mkdir -p target/site
-          # mvn -B site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
+          mvn -B site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
         env:
+          MAVEN_SITE_USERNAME: ${{ secrets.MAVEN_SITE_USERNAME }}
+          MAVEN_SITE_PASSWORD: ${{ secrets.MAVEN_SITE_PASSWORD }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
