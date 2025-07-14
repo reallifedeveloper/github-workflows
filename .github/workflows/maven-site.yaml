@@ -24,7 +24,7 @@ jobs:
       - name: Added github server to ~/.m2/settings.xml
         run: |
           XML='<server>\n<id>github</id>\n<username>${env.GITHUB_ACTOR}</username>\n<password>${env.GITHUB_TOKEN}</password>\n</server>'
-          C=$(echo $XML_CONTENT | sed 's/\//\\\//g')
+          C=$(echo $XML | sed 's/\//\\\//g')
           sed -i "/<\/servers>/ s/.*/${C}\n&/" ~/.m2/settings.xml
           echo "~/.m2/settings.xml:"
           cat ~/.m2/settings.xml
