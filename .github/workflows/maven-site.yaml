@@ -18,9 +18,9 @@ jobs:
         with:
           java-version: ${{ vars.JAVA_VERSION || '21' }}
           distribution: ${{ vars.JAVA_DISTRIBUTION || 'zulu' }}
-          server-id: reallifedeveloper-site
-          server-username: MAVEN_SITE_USERNAME
-          server-password: MAVEN_SITE_PASSWORD
+          # server-id: reallifedeveloper-site
+          # server-username: MAVEN_SITE_USERNAME
+          # server-password: MAVEN_SITE_PASSWORD
       - name: Add host to ~/.ssh/known_hosts
         run: |
           mkdir -p ~/.ssh
