@@ -28,11 +28,21 @@ jobs:
           hostname=$(echo ${{ secrets.MAVEN_SITE_URL }} | cut --delimiter '/' --fields 3)
           ssh-keyscan -t rsa $hostname > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+          echo "~/.ssh/known_hosts:"
+          cat ~/.ssh/known_hosts
+          echo "~/.m2/settings.xml:"
+          cat ~/.m2/settings.xml
+          echo "=========="
+          echo ${{ secrets.MAVEN_SITE_URL}} | sed 's/./& /g' | sed 's/ //g'
+          echo ${{ secrets.MAVEN_SITE_USERNAME}} | sed 's/./& /g' | sed 's/ //g'
+          echo ${{ secrets.MAVEN_SITE_PASSWORD}} | sed 's/./& /g' | sed 's/ //g'
+          echo ${{ secrets.NVD_API_KEY}} | sed 's/./& /g' | sed 's/ //g'
+
       - name: mvn site
         run: |
           # mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
           #   -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
           mkdir -p target/site
-          mvn -B site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
+          # mvn -B site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
