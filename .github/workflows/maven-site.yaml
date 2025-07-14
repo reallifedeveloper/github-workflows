@@ -28,10 +28,14 @@ jobs:
           hostname=$(echo ${{ secrets.MAVEN_SITE_URL }} | cut --delimiter '/' --fields 3)
           ssh-keyscan -t rsa $hostname > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+          echo "~/.m2/settings.xml:"
+          cat ~/.m2/settings.xml
+          echo
       - name: mvn site
         run: |
-          mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
-            -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
+          # mvn -B -P coverage clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
+          #   -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
+          echo "Done"
         env:
           MAVEN_SITE_USERNAME: ${{ secrets.MAVEN_SITE_USERNAME }}
           MAVEN_SITE_PASSWORD: ${{ secrets.MAVEN_SITE_PASSWORD }}
