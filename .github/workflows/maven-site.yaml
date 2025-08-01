@@ -25,7 +25,7 @@ jobs:
             [{
               "id": "reallifedeveloper-site",
               "username": "${env.MAVEN_SITE_USERNAME}",
-              "privateKey": "~/.ssh/id_ed25519",
+              "privateKey": "${user.home}/.ssh/id_ed25519",
               "passphrase": "${env.MAVEN_SITE_PASSPHRASE}"
             }]
       - name: Add host to ~/.ssh/known_hosts
@@ -37,7 +37,7 @@ jobs:
           chmod 600 ~/.ssh/known_hosts
       - name: Add SSH private key
         run: |
-          cat <(echo -e "${{ secrets.MAVEN_SITE_PRIVATE_KEY }}") > ~/.ssh/id_ed25519
+          echo -e "${{ secrets.MAVEN_SITE_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
       - name: mvn site
         run: |
           mvn -B -Pcoverage,pitest clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
