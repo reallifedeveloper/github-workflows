@@ -41,7 +41,7 @@ jobs:
       - name: mvn site
         run: |
           echo "id_ed25519:"
-          cat ~/.ssh/id_id25519
+          cat ~/.ssh/id_ed25519
           echo "settings.xml:"
           cat ~/.m2/settings.xml
           # mvn -B -Pcoverage,pitest clean install site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
