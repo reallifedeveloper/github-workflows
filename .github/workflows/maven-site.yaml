@@ -40,12 +40,8 @@ jobs:
           cat <(echo -e "${{ secrets.MAVEN_SITE_PRIVATE_KEY }}") > ~/.ssh/id_ed25519
       - name: mvn site
         run: |
-          echo "id_ed25519:"
-          cat ~/.ssh/id_ed25519
-          echo "settings.xml:"
-          cat ~/.m2/settings.xml
-          # mvn -B -Pcoverage,pitest clean install site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
-          #   -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
+          mvn -B -Pcoverage,pitest clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
+            -Dreallifedeveloper-site.distributionManagement.url="${{ secrets.MAVEN_SITE_URL }}"
         env:
           MAVEN_SITE_USERNAME: ${{ secrets.MAVEN_SITE_USERNAME }}
           MAVEN_SITE_PASSPHRASE: ${{ secrets.MAVEN_SITE_PASSPHRASE }}
