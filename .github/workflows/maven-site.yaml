@@ -25,7 +25,7 @@ jobs:
             [{
               "id": "reallifedeveloper-site".
               "username": "${env.MAVEN_SITE_USERNAME}"
-              "privateKey": "~/.ssh/id_ed25519"
+              "privateKey": "~/.ssh/id_ed25519",
               "passphrase": "${env.MAVEN_SITE_PASSPHRASE}"
             }]
       - name: Add host to ~/.ssh/known_hosts
