@@ -23,8 +23,8 @@ jobs:
         with:
           servers: |
             [{
-              "id": "reallifedeveloper-site".
-              "username": "${env.MAVEN_SITE_USERNAME}"
+              "id": "reallifedeveloper-site",
+              "username": "${env.MAVEN_SITE_USERNAME}",
               "privateKey": "~/.ssh/id_ed25519",
               "passphrase": "${env.MAVEN_SITE_PASSPHRASE}"
             }]
