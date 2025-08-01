@@ -21,7 +21,7 @@ jobs:
         with:
           java-version: ${{ vars.JAVA_VERSION || '21' }}
           distribution: ${{ vars.JAVA_DISTRIBUTION || 'zulu' }}
-      - NAME: Configure ~/.m2/settings.xml
+      - name: Configure ~/.m2/settings.xml
         uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: |
