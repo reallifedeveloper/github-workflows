@@ -22,7 +22,6 @@ on:
       RLD_TOKEN:
         description: 'The GitHub Personal Access Token to use for Git operations, default is GITHUB_TOKEN'
         required: false
-        default: ${{ secrets.GITHUB_TOKEN }}
       GPG_SECRET_KEY:
         description: 'If provided, the GPG key to use to sign the Git release tag, should use \n for newlines'
         required: false
