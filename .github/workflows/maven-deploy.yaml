@@ -19,7 +19,7 @@ on:
         description: 'The username used when publishing to central.sonatype.com'
         required: true
       SONATYPE_CENTRAL_PASSWORD:
-        description: 'The password (token) used then publishing to central.sonatype.com'
+        description: 'The password (token) used when publishing to central.sonatype.com'
         required: true
 
 jobs:
