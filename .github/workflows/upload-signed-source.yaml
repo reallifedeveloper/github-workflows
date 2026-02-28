@@ -15,7 +15,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Import GPG secret key
         run: |
           cat <(echo -e "${{ secrets.GPG_SECRET_KEY }}") | gpg --batch --import
@@ -33,7 +33,7 @@ jobs:
           # Save RELEASE_NAME for next step
           echo "RELEASE_NAME=${RELEASE_NAME}" >> $GITHUB_ENV
       - name: Upload archive and signature files
-        uses: softprops/action-gh-release@v2.3.2
+        uses: softprops/action-gh-release@v2.5.0
         if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
         with:
           files: |
