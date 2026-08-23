@@ -38,9 +38,6 @@ jobs:
       - name: Add SSH private key
         run: |
           echo -e "${{ secrets.MAVEN_SITE_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-      - name: Download dependencies
-        run: |
-          mvn -B dependency:go-offline
       - name: mvn site
         run: |
           mvn -B -Pcoverage,pitest clean integration-test site site:deploy -Dnvd.api.key="${{ secrets.NVD_API_KEY }}" \
